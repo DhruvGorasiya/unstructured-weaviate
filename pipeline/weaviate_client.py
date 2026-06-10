@@ -1,5 +1,6 @@
 import weaviate
 from weaviate.classes.config import Configure, Property, DataType
+from weaviate.classes.query import Filter
 
 COLLECTION_NAME = "DocumentChunk"
 
@@ -21,6 +22,12 @@ def get_collection(client: weaviate.WeaviateClient):
             ],
         )
     return client.collections.get(COLLECTION_NAME)
+
+
+def delete_by_source(collection, source_file: str) -> None:
+    collection.data.delete_many(
+        where=Filter.by_property("source_file").equal(source_file)
+    )
 
 
 def batch_insert(collection, chunks: list[dict]) -> int:

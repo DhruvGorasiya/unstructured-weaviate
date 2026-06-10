@@ -3,6 +3,7 @@ from dotenv import load_dotenv
 from weaviate.exceptions import WeaviateConnectionError
 
 from pipeline import pipeline
+from pipeline.generate import generate_answer
 from pipeline.search import search_chunks
 
 load_dotenv()
@@ -44,6 +45,12 @@ if query:
     if not results:
         st.info("No results found.")
     else:
+        with st.spinner("Generating answer..."):
+            answer = generate_answer(query, results)
+        st.markdown("### Answer")
+        st.write(answer)
+
+        st.markdown("### Sources")
         for r in results:
             score_str = f"{r['score']:.4f}" if r["score"] is not None else "n/a"
             label = f"{r['source_file']} | p.{r['page_number']} | {r['element_type']} | score: {score_str}"

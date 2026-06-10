@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 
 from .embed import embed_texts
 from .ingest import parse_file
-from .weaviate_client import batch_insert, get_client, get_collection
+from .weaviate_client import batch_insert, delete_by_source, get_client, get_collection
 
 load_dotenv()
 
@@ -26,6 +26,7 @@ def pipeline(file_bytes: bytes, filename: str) -> int:
     client = get_client()
     try:
         collection = get_collection(client)
+        delete_by_source(collection, filename)
         inserted = batch_insert(collection, chunks)
     finally:
         client.close()

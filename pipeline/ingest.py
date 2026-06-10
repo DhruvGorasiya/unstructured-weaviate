@@ -17,9 +17,8 @@ def parse_file(file_bytes: bytes, filename: str, api_key: str) -> list[dict]:
                     },
                     "strategy": strategy,
                     "chunking_strategy": "by_title",
-                    "max_characters": 2000,
-                    "overlap": 200,
-                    "overlap_all": True,
+                    "max_characters": 500,
+                    "overlap": 0,
                     "include_orig_elements": False,
                 }
             }

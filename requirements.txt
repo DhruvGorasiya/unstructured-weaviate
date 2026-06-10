@@ -1,3 +1,4 @@
+anthropic>=0.40.0
 unstructured-client>=0.45.0
 weaviate-client>=4.0
 openai>=1.0
