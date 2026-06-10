@@ -1,0 +1,87 @@
+Getting Started with Vector Databases
+
+A vector database is a specialized database system designed to store, index, and query
+high-dimensional vector embeddings efficiently. Unlike traditional relational databases
+that store structured data in rows and columns, vector databases are optimized for
+similarity search operations on dense numerical vectors.
+
+What Are Vector Embeddings
+
+Vector embeddings are numerical representations of data — text, images, audio, or video
+— that capture semantic meaning in a high-dimensional space. Points that are close
+together in vector space represent semantically similar concepts. For example, the
+embeddings for "dog" and "puppy" will be much closer to each other than the embeddings
+for "dog" and "automobile."
+
+Embedding models such as OpenAI's text-embedding-3-small produce vectors with 1536
+dimensions. Each dimension captures a learned feature of the input. The distance between
+two vectors, often measured using cosine similarity or Euclidean distance, reflects how
+semantically similar the inputs are.
+
+Key Concepts in Vector Search
+
+Approximate Nearest Neighbor Search
+
+Exact nearest neighbor search over millions of high-dimensional vectors is computationally
+expensive. Vector databases use Approximate Nearest Neighbor (ANN) algorithms such as
+HNSW (Hierarchical Navigable Small World) to find similar vectors quickly with minimal
+accuracy trade-off. HNSW builds a multi-layer graph structure that allows logarithmic
+time complexity for search operations.
+
+BM25 and Keyword Search
+
+BM25 (Best Match 25) is a classical information retrieval algorithm based on term
+frequency and inverse document frequency. It scores documents based on how often query
+terms appear relative to the average document length. BM25 excels at exact keyword
+matching and handles rare or domain-specific terms better than pure semantic search.
+
+Hybrid Search
+
+Hybrid search combines vector similarity (dense retrieval) with BM25 keyword matching
+(sparse retrieval). The alpha parameter controls the balance: an alpha of 0 uses only
+BM25, an alpha of 1 uses only vector search, and values in between blend both scores.
+Hybrid search typically outperforms either approach alone, especially for queries that
+mix specific terminology with broader semantic intent.
+
+Weaviate Architecture
+
+Weaviate is an open-source vector database built on a GraphQL and REST API. It supports
+multiple storage backends and is designed for horizontal scalability. The core data
+unit in Weaviate is an Object, which belongs to a Collection (formerly called a Class).
+
+Collections define the schema: the properties each object holds, their data types, and
+the indexing configuration. Weaviate supports two indexing approaches for search:
+HNSW vector indexing for semantic search, and BM25 inverted indexing for keyword search.
+
+Bring Your Own Vector (BYOV) is the mode where the application generates embeddings
+externally and passes them directly to Weaviate on insert. This is useful when you want
+to use a specific embedding model such as OpenAI's text-embedding-3-small rather than
+one of Weaviate's built-in vectorizer modules.
+
+Retrieval-Augmented Generation
+
+Retrieval-Augmented Generation (RAG) is an architecture that grounds large language model
+outputs in retrieved context. Instead of relying solely on the parameters learned during
+pre-training, the LLM is provided with relevant chunks retrieved from a knowledge base
+at inference time.
+
+The standard RAG pipeline involves four stages: ingestion, retrieval, augmentation, and
+generation. During ingestion, documents are parsed, chunked, embedded, and stored in a
+vector database. At query time, the user's question is embedded and used to retrieve the
+most relevant chunks. These chunks are injected into the LLM prompt as context, and the
+model generates a response grounded in the retrieved information.
+
+RAG significantly reduces hallucination because the model can reference specific source
+material rather than relying on potentially outdated or incorrect parametric knowledge.
+It also allows knowledge bases to be updated without retraining the language model.
+
+Chunking Strategies
+
+The quality of a RAG system depends heavily on how documents are chunked before indexing.
+Fixed-size chunking splits text at regular character or token intervals regardless of
+content boundaries, which can cut sentences or ideas in half.
+
+Semantic chunking uses an embedding model to identify natural breakpoints where the
+topic shifts significantly. By-title chunking, used by the Unstructured library, splits
+documents at heading boundaries, preserving logical document structure. Overlapping
+chunks ensure that context near boundaries is captured in both adjacent chunks.

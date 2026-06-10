@@ -1,0 +1,6 @@
+unstructured-client>=0.45.0
+weaviate-client>=4.0
+openai>=1.0
+streamlit>=1.35
+python-dotenv>=1.0
+tqdm>=4.0
